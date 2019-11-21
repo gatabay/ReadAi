@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en-US" class="no-js">
+
+<head>
+	<!-- Mobile Specific Meta -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Favicon-->
+	<link rel="shortcut icon" href="../static/img/fav.png">
+	<!-- Author Meta -->
+	<meta name="author" content="codepixer">
+	<!-- Meta Description -->
+	<meta name="description" content="">
+	<!-- Meta Keyword -->
+	<meta name="keywords" content="">
+	<!-- meta character set -->
+	<meta charset="UTF-8">
+	<!-- Site Title -->
+	<title>ReadAI | Fast Reading</title>
+	<!-- Google Font ============================================= -->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,500,600" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500i" rel="stylesheet">
+	<!-- CSS ===================================================== -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/themify-icons/0.1.2/css/themify-icons.css">
+	<link rel="stylesheet" href="../static/css/linearicons.css">
+	<link rel="stylesheet" href="../static/css/font-awesome.min.css">
+	<link rel="stylesheet" href="../static/css/bootstrap.css">
+	<link rel="stylesheet" href="../static/css/magnific-popup.css">
+	<link rel="stylesheet" href="../static/css/nice-select.css">
+	<link rel="stylesheet" href="../static/css/animate.min.css">
+	<link rel="stylesheet" href="../static/css/owl.carousel.css">
+	<link rel="stylesheet" href="../static/css/main.css">
+    <style type="text/css">
+		.highlight-noun {
+			background-color: #7e7982;
+    		color:#ff0000;
+    		font-weight: bold;
+		}
+
+		.highlight-adj{
+    		background-color: #7e7982;
+    		color:#11ff00;
+    		font-weight: bold;
+		}
+
+		.highlight-num{
+    		background-color: #7e7982;
+    		color:#0073ff;
+    		font-weight: bold;
+		}
+
+		.highlight-verb{
+    		background-color: #7e7982;
+    		color:#ee4efc;
+    		font-weight: bold;
+		}
+
+		.highlight-pron{
+    		background-color: #7e7982;
+    		color:#26ffff;
+    		font-weight: bold;
+		}
+	</style>
+</head>
+
+<body>
+    <!--Start Feature Area -->
+	<section class="feature-area">
+		<div class="container">
+			<div class="row justify-content-center">
+				<button class='genric-btn primary radius highlightButton'>Start</button>
+			</div>
+			<div class="row justify-content-center">
+				<div class="col-lg-8">
+					<div class="section-title text-center">
+						<div id="inputText">
+                            {% for word in words %}
+                                <span id="word"> {{ word }} </span>
+                            {% endfor %}
+                        </div>
+					</div>
+				</div>
+			</div>
+        </div>
+	</section>
+
+    <!-- End Feature Area -->
+	<script src="../static/js/vendor/jquery-2.2.4.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+	        crossorigin="anonymous"></script>
+	<script src="../static/js/vendor/bootstrap.min.js"></script>
+	<script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA"></script>
+	<script src="../static/js/easing.min.js"></script>
+	<script src="../static/js/hoverIntent.js"></script>
+	<script src="../static/js/superfish.min.js"></script>
+	<script src="../static/js/jquery.ajaxchimp.min.js"></script>
+	<script src="../static/js/jquery.magnific-popup.min.js"></script>
+	<script src="../static/js/owl.carousel.min.js"></script>
+	<script src="../static/js/owl-carousel-thumb.min.js"></script>
+	<script src="../static/js/jquery.sticky.js"></script>
+	<script src="../static/js/jquery.nice-select.min.js"></script>
+	<script src="../static/js/parallax.min.js"></script>
+	<script src="../static/js/waypoints.min.js"></script>
+	<script src="../static/js/wow.min.js"></script>
+	<script src="../static/js/jquery.counterup.min.js"></script>
+	<script src="../static/js/mail-script.js"></script>
+	<script src="../static/js/main.js"></script>
+    <script type="text/javascript">
+
+		var fps = 100;
+		var speedFactor = 0.001;
+		var minDelta = 0.5;
+		var autoScrollSpeed = 10;
+		var autoScrollTimer, restartTimer;
+		var isScrolling = false;
+		var prevPos = 0, currentPos = 0;
+		var currentTime, prevTime, timeDiff;
+
+		window.addEventListener("scroll", function (e) {
+		    // window.pageYOffset is the fallback value for IE
+		    currentPos = window.scrollY || window.pageYOffset;
+		});
+
+		function startProcess(newValue) {
+		    if (newValue) {
+		        autoScrollSpeed = speedFactor * newValue;
+		    }
+		    if (autoScrollTimer) {
+		        clearInterval(autoScrollTimer);
+		    }
+		    autoScrollTimer = setInterval(function(){
+		        currentTime = Date.now();
+		        if (prevTime) {
+		            if (!isScrolling) {
+		                timeDiff = currentTime - prevTime;
+		                currentPos += autoScrollSpeed * timeDiff;
+		                if (Math.abs(currentPos - prevPos) >= minDelta) {
+		                    isScrolling = true;
+		                    window.scrollTo(0, currentPos);
+		                    isScrolling = false;
+		                    prevPos = currentPos;
+		                    prevTime = currentTime;
+		                }
+		            }
+		        } else {
+		            prevTime = currentTime;
+		        }
+		        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+        			clearInterval(autoScrollTimer)
+				}
+		    }, 1000 / fps);
+		}
+
+		let nounString = "{{ markups["NOUN"] }}";
+		let adjString = "{{ markups["ADJ"] }}";
+		let numString = "{{ markups["NUM"] }}";
+		let pronString = "{{ markups["PRON"] }}";
+		let verbString = "{{ markups["VERB"] }}";
+
+		$(document).ready(function () {
+
+			let noun = nounString.split(" ");
+			let adjective = adjString.split(" ");
+			let numeral = numString.split(" ");
+			let pronoun = pronString.split(" ");
+			let verb = verbString.split(" ");
+
+		    let speed = 100; // ms cinsinden
+
+		    function timer(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+		    async function addHighlight(i) { // 3
+			  await timer(speed);
+
+			  var checkWord = $.trim($( "span:eq("+i+")" ).text());
+
+		        	if (noun.indexOf(checkWord) != "-1") {
+			        	$( "span:eq("+i+")" ).addClass("highlight-noun");
+			        }
+			        else if (adjective.indexOf(checkWord) != "-1"){
+				        $( "span:eq("+i+")" ).addClass("highlight-adj");
+			        }
+			        else if (numeral.indexOf(checkWord) != "-1"){
+				        $( "span:eq("+i+")" ).addClass("highlight-num");
+			        }
+			        else if (pronoun.indexOf(checkWord) != "-1"){
+				        $( "span:eq("+i+")" ).addClass("highlight-pron");
+			        }
+			        else if (verb.indexOf(checkWord) != "-1"){
+				        $( "span:eq("+i+")" ).addClass("highlight-verb");
+			        }
+
+			}
+
+			async function proccess() {
+				var len = $( "span" ).length;
+			    for (var i = 0; i < len; i++) {
+
+			        await addHighlight(i);
+
+			  	}
+			}
+
+		    $('.highlightButton').bind('click', function () {
+		    	proccess();
+		    	startProcess(10)
+		    });
+		});
+    </script>
+</body>
+</html>

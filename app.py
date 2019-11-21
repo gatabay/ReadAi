@@ -1,27 +1,28 @@
 from operations import parse_article
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, render_template
 
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def index():
-    return "Hello, World!"
+    return render_template("index.html")
 
-@app.route("/parse", methods=['POST'])
-def parse():
-    if not request.is_json:
-        abort(400)
 
-    arguments = request.json
+@app.route("/read", methods=['POST'])
+def read():
+    arguments = request.form
     
     url = arguments.get("url", None)
 
     if not url:
         abort(400)
-    
-    return jsonify(parse_article(url))
+
+    words, markups = parse_article(url)
+
+    return render_template("read.html", words=words, markups=markups)
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True)

@@ -1,8 +1,6 @@
 from nltk.tag import pos_tag
-from nltk.tokenize import word_tokenize
 from newspaper import Article
-
-
+from nltk.tokenize import word_tokenize
 
 
 def get_article(url):
@@ -16,25 +14,27 @@ def get_article(url):
     return article.text
 
 
-
-
 def parse_article(url):
-    result = list()
+    markups = {"ADJ": list(), "NOUN": list(), "NUM": list(), "PRON": list(), "VERB": list()}
     text = get_article(url)
+    words = [word.strip().replace("\n", "").replace("\r", "").replace("\t", "") for word in text.split(" ")]
     pos_tags = pos_tag(word_tokenize(text), tagset="universal")
 
     for word, tag in pos_tags:
-        if tag == "ADJ":
-            result.append((word, "red"))
-        elif tag == "NOUN":
-            result.append((word, "green"))
-        elif tag == "NUM":
-            result.append((word, "blue"))
-        elif tag == "PRON":
-            result.append((word, "purple"))
-        elif tag == "VERB":
-            result.append((word, "orange"))
-        else:
-            result.append((word, "black"))
+        if tag in markups.keys():
+            if tag == "ADJ":
+                markups[tag].append(word)
+            elif tag == "NOUN":
+                markups[tag].append(word)
+            elif tag == "NUM":
+                markups[tag].append(word)
+            elif tag == "PRON":
+                markups[tag].append(word)
+            elif tag == "VERB":
+                if tag not in ["am", "is", "are", "will", "won't", "has", "have"]:
+                    markups[tag].append(word)
 
-    return result
+    for key, val in markups.items():
+        markups[key] = " ".join(val)
+
+    return words, markups
