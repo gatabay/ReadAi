@@ -1,6 +1,8 @@
-from nltk.tag import pos_tag
 from newspaper import Article
-from nltk.tokenize import word_tokenize
+from langdetect import detect
+from find_pos import pos_taggers, is_stop_word
+from summa import summarizer, keywords
+from sentence_splitter import split_text_into_sentences
 
 
 def get_article(url):
@@ -15,26 +17,25 @@ def get_article(url):
 
 
 def parse_article(url):
-    markups = {"ADJ": list(), "NOUN": list(), "NUM": list(), "PRON": list(), "VERB": list()}
     text = get_article(url)
-    words = [word.strip().replace("\n", "").replace("\r", "").replace("\t", "") for word in text.split(" ")]
-    pos_tags = pos_tag(word_tokenize(text), tagset="universal")
 
-    for word, tag in pos_tags:
-        if tag in markups.keys():
-            if tag == "ADJ":
-                markups[tag].append(word)
-            elif tag == "NOUN":
-                markups[tag].append(word)
-            elif tag == "NUM":
-                markups[tag].append(word)
-            elif tag == "PRON":
-                markups[tag].append(word)
-            elif tag == "VERB":
-                if tag not in ["am", "is", "are", "will", "won't", "has", "have"]:
-                    markups[tag].append(word)
+    summary = summarizer.summarize(text)
 
-    for key, val in markups.items():
-        markups[key] = " ".join(val)
+    lang = detect(text)
 
-    return words, markups
+    print(f'LANG: {lang}')
+
+    sentences = split_text_into_sentences(text=text, language=lang)
+    sentences = [s for s in sentences if s.strip()]
+
+    tagger = pos_taggers[lang]
+
+    words, markups = tagger(sentences)
+
+    _keywords = keywords.keywords(text).split("\n")
+
+    _keywords = [k for k in _keywords if not is_stop_word(k)]
+
+    markups["KEYWORD"] = _keywords
+
+    return words, markups, summary

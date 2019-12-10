@@ -1,5 +1,16 @@
+from jpype import startJVM, getDefaultJVMPath, shutdownJVM
+
+
 from operations import parse_article
-from flask import Flask, request, abort, jsonify, render_template
+from flask import Flask, request, abort, render_template
+
+
+startJVM(
+    getDefaultJVMPath(),
+    '-ea',
+    f'-Djava.class.path=zemberek-full.jar',
+    convertStrings=False
+)
 
 
 app = Flask(__name__)
@@ -19,10 +30,16 @@ def read():
     if not url:
         abort(400)
 
-    words, markups = parse_article(url)
+    words, markups, summary = parse_article(url)
 
-    return render_template("read.html", words=words, markups=markups)
+    for key, val in markups.items():
+        print(f'NUM {key}: {len(val)}')
+
+    print(f'SUMMARY:\n{summary}')
+
+    return render_template("read.html", words=words, markups=markups, summary=summary)
 
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
+    shutdownJVM()

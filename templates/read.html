@@ -31,45 +31,73 @@
 	<link rel="stylesheet" href="../static/css/main.css">
     <style type="text/css">
 		.highlight-noun {
-			background-color: #7e7982;
-    		color:#ff0000;
+			background-color: #828080;
+    		color: #ff8e2c;
     		font-weight: bold;
 		}
 
 		.highlight-adj{
-    		background-color: #7e7982;
+    		background-color: #828080;
     		color:#11ff00;
     		font-weight: bold;
 		}
 
 		.highlight-num{
-    		background-color: #7e7982;
+    		background-color: #828080;
     		color:#0073ff;
     		font-weight: bold;
 		}
 
 		.highlight-verb{
-    		background-color: #7e7982;
+    		background-color: #828080;
     		color:#ee4efc;
     		font-weight: bold;
 		}
 
 		.highlight-pron{
-    		background-color: #7e7982;
+    		background-color: #828080;
     		color:#26ffff;
+    		font-weight: bold;
+		}
+        .highlight-keyword{
+    		background-color: #828080;
+    		color: #fff93a;
+    		font-weight: bold;
+		}
+        .summary{
+    		color: #ffffff;
     		font-weight: bold;
 		}
 	</style>
 </head>
 
 <body>
-    <!--Start Feature Area -->
+
+
 	<section class="feature-area">
+        <div class="container">
+
+
+            <div class="row justify-content-center ">
+				<h2 class="summary">SUMMARY</h2>
+			</div>
+			<div class="row justify-content-center " style="font-size: 20px;">
+				<div class="col-lg-8">
+					<div class="section-title text-center">
+						<div id="inputText">
+
+                                <span> {{ summary }} </span>
+
+                        </div>
+					</div>
+				</div>
+			</div>
+        </div>
 		<div class="container">
 			<div class="row justify-content-center">
 				<button class='genric-btn primary radius highlightButton'>Start</button>
 			</div>
-			<div class="row justify-content-center">
+			<div class="row justify-content-center" style="font-size: 20px;">
 				<div class="col-lg-8">
 					<div class="section-title text-center">
 						<div id="inputText">
@@ -157,6 +185,7 @@
 		let numString = "{{ markups["NUM"] }}";
 		let pronString = "{{ markups["PRON"] }}";
 		let verbString = "{{ markups["VERB"] }}";
+		let keywordString = "{{ markups["KEYWORD"] }}";
 
 		$(document).ready(function () {
 
@@ -165,8 +194,9 @@
 			let numeral = numString.split(" ");
 			let pronoun = pronString.split(" ");
 			let verb = verbString.split(" ");
+			let keywords = keywordString.split(" ");
 
-		    let speed = 100; // ms cinsinden
+		    let speed = 150; // ms cinsinden
 
 		    function timer(ms) { return new Promise(res => setTimeout(res, ms)); }
 
@@ -174,23 +204,29 @@
 			  await timer(speed);
 
 			  var checkWord = $.trim($( "span:eq("+i+")" ).text());
-
 		        	if (noun.indexOf(checkWord) != "-1") {
 			        	$( "span:eq("+i+")" ).addClass("highlight-noun");
 			        }
-			        else if (adjective.indexOf(checkWord) != "-1"){
+
+		        	if (adjective.indexOf(checkWord) != "-1"){
 				        $( "span:eq("+i+")" ).addClass("highlight-adj");
 			        }
-			        else if (numeral.indexOf(checkWord) != "-1"){
+
+			        if (numeral.indexOf(checkWord) != "-1"){
 				        $( "span:eq("+i+")" ).addClass("highlight-num");
 			        }
-			        else if (pronoun.indexOf(checkWord) != "-1"){
+
+			        if (pronoun.indexOf(checkWord) != "-1"){
 				        $( "span:eq("+i+")" ).addClass("highlight-pron");
 			        }
-			        else if (verb.indexOf(checkWord) != "-1"){
+
+			        if (verb.indexOf(checkWord) != "-1"){
 				        $( "span:eq("+i+")" ).addClass("highlight-verb");
 			        }
 
+			        if (keywords.indexOf(checkWord) != "-1"){
+				        $( "span:eq("+i+")" ).addClass("highlight-keyword");
+			        }
 			}
 
 			async function proccess() {
