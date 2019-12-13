@@ -5,4 +5,4 @@ nltk==3.4.5
 sentence-splitter==1.4
 langdetect==1.0.7
 summa==1.2.0
-python-dateutil
+python-dateutil==2.8.0
